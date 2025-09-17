@@ -57,7 +57,47 @@ public class EntityManagerCRUDTest {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
 
-        entityManager.persist(menu);   // 영속상태로 바꿈
-        transaction.commit();
+        try {
+            entityManager.persist(menu);   // 영속상태로 바꿈
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        }
+    }
+
+    @Test
+    public void 메뉴_이름_수정_테스트() {
+
+        /* 설명. 23번 메뉴 엔티티를 영속 상태로 만들어 받은 다음 */
+        Menu menu = entityManager.find(Menu.class, 23);
+        System.out.println("수정 전 menu: " + menu);
+
+        String menuNameToChange = "갈치스무디";
+
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        try {
+            menu.setMenuName(menuNameToChange);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        }
+    }
+
+    @Test
+    public void 메뉴_삭제하기_테스트() {
+
+        Menu menuToRemove = entityManager.find(Menu.class, 23);
+
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        try {
+            entityManager.remove(menuToRemove);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        }
     }
 }
