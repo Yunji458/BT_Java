@@ -87,7 +87,7 @@ public class EntityLifeCycleTest {
         menuToRegist.setCategoryCode(10);
         menuToRegist.setOrderableStatus("Y");
 
-        entityManager.persist(menuToRegist);     // 여기서부터 영속 상태가 됨
+        entityManager.persist(menuToRegist);    // 여기서부터 영속 상태가 됨
         menuToRegist.setMenuName("메론죽");
 
         Menu foundMenu = entityManager.find(Menu.class, 501);
@@ -117,7 +117,7 @@ public class EntityLifeCycleTest {
          *    특정 상황(flush를 특정시점에 별도로 사용)에서 성능 최적화나
          *    데이터 무결성 유지, 특정 작업 후 엔티티 변경 방지를 위해 사용 된다.
          *    (DB에서 가져온 객체를 DB에 영향을 크게 주지 않는 선에서 활용하고 싶을 때, 둘 다 활용도 가능)
-        * */
+         * */
         entityManager.detach(foundMenu2);
 
         foundMenu1.setMenuPrice(7000);
@@ -134,15 +134,21 @@ public class EntityLifeCycleTest {
         Menu foundMenu1 = entityManager.find(Menu.class, 11);
         Menu foundMenu2 = entityManager.find(Menu.class, 12);
 
-        entityManager.clear();       // 영속성 컨텍스트에 있는 모든 영속 상태의 엔티티를 준영속으로 변경
-
-        foundMenu1.setMenuPrice(8000);
-        foundMenu2.setMenuPrice(8000);
-
+//        entityManager.clear();    // 영속성 컨텍스트에 있는 모든 영속 상태의 엔티티를 준영속으로 변경
+        entityManager.close();      // 기존의 영속 상태의 엔티티들이 모두 준영속 상태가 되면서 영속성 컨텍스트가 파괴됨
         transaction.commit();
 
-        Assertions.assertNotEquals(8000, entityManager.find(Menu.class, 11).getMenuPrice());
-        Assertions.assertNotEquals(8000, entityManager.find(Menu.class, 12).getMenuPrice());
+        entityManager = entityManagerFactory.createEntityManager();  // 새로 만듦
+        EntityTransaction transaction2 = entityManager.getTransaction();
+        transaction2.begin();
+
+        foundMenu1.setMenuPrice(14000);
+        foundMenu2.setMenuPrice(14000);
+
+        transaction2.commit();
+
+        Assertions.assertNotEquals(14000, entityManager.find(Menu.class, 11).getMenuPrice());
+        Assertions.assertNotEquals(14000, entityManager.find(Menu.class, 12).getMenuPrice());
     }
 
     @Test
@@ -150,22 +156,22 @@ public class EntityLifeCycleTest {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
 
-        Menu menuToDetach = entityManager.find(Menu.class, 5);
+        Menu menuToDetach =  entityManager.find(Menu.class, 5);
         entityManager.clear();
 
         menuToDetach.setMenuName("수박죽");
 
         Menu refoundMenu = entityManager.find(Menu.class, 5);
         System.out.println("첫 번째 5번 메뉴의 이름: " + menuToDetach.getMenuName());
-        System.out.println("두 번째 5번 메뉴의 이름: "  + refoundMenu.getMenuName());
+        System.out.println("두 번째 5번 메뉴의 이름: " + refoundMenu.getMenuName());
 
         entityManager.merge(menuToDetach);
 
         /* 설명. 결과적으로 준영속 상태였던 것과 DB에서 다시 조회한 것 중에 어떤 것이 살아남았는지 확인하기 위해 다시 find */
-        Menu manageMenu = entityManager.find(Menu.class, 5);
+        Menu managedMenu = entityManager.find(Menu.class, 5);
 
         transaction.commit();
 
-        Assertions.assertEquals("수박죽", manageMenu.getMenuName());
+        Assertions.assertEquals("수박죽", managedMenu.getMenuName());
     }
 }
