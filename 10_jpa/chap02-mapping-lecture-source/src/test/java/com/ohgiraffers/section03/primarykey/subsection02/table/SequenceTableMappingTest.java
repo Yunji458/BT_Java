@@ -1,9 +1,12 @@
-package com.ohgiraffers.section03.primarykey.subsection01.identity;
+package com.ohgiraffers.section03.primarykey.subsection02.table;
 
-import jakarta.persistence.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.*;
 
-public class PrimaryKeyMappingTest {
+public class SequenceTableMappingTest {
     private static EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
 
@@ -15,7 +18,6 @@ public class PrimaryKeyMappingTest {
     @BeforeEach
     public void initManager() {
 
-        /* 설명. EntityManager가 생성될 때마다 고유의 새로운 영속성 컨텍스트(Entity 객체를 관리하는 창고)가 생성된다. */
         entityManager = entityManagerFactory.createEntityManager();
     }
 
@@ -56,7 +58,7 @@ public class PrimaryKeyMappingTest {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
 
-        /* 설명. PK전략을 GenerationType.IDENTITY로 가져가면 persist 시점에 insert가 무조건 발생한다.(즉시 flush() 호출함) */
+        /* 설명. PK전략을 GenerationType.TABLE로 가져가면 commit 시점에 insert가 무조건 발생한다. */
         System.out.println("persist 전 member: " + member);
         entityManager.persist(member);
         entityManager.persist(member2);
