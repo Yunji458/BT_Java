@@ -19,12 +19,13 @@ import java.util.stream.Collectors;
 public class ResponseEntityTestController {
 
     /* 설명.
-     * ResponseEntity란?
-     *  HttpRequest를 응답하기 위헤 httpEntity를 상속받아 HttpStatus, HttpHeaders, HttpBody를
-     *  정의하여 사용하는 클래스이다.
-     *  (Http는 단순한 데이터 전송이 아니라 상태 정보를 포한한 통신 프로토콜이기 떄문에, 올바른 상태 코드와
-     *  헤더를 제공해야 클라이언트가 적절히 반응할 수 있다.
-    * */
+     *  ResponseEntity란?
+     *   HttpRequest를 응답하기 위해 httpEntity를 상속받아 HttpStatus, HttpHeaders, HttpBody를
+     *   정의하여 사용하는 클래스이다.
+     *   (HTTP는 단순한 데이터 전송이 아니라 상태 정보를 포함한 통신 프로토콜이기 때문에, 올바른 상태 코드와
+     *   헤더를 제공해야 클라이언트가 적절히 반응할 수 있다.)
+     * */
+
     private List<UserDTO> users;
 
     public ResponseEntityTestController() {
@@ -52,8 +53,8 @@ public class ResponseEntityTestController {
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
     }
 
-    /* 설명. 2. 빌더를 활용한 메소드 제이닝 방식으로 ResponseEntity 객체 만들기(요즘 유행) */
-    /* 설명. 빌터패턴: 생성자/setter를 사용하지 않고 내가 원하는 속성을 수정해서 불변객체로 만드는 패턴(feat.내부 클래스) */
+    /* 설명. 2. 빌더를 활용한 메소드 체이닝 방식으로 ResponseENtity 객체 만들기(요즘 유행) */
+    /* 설명. 빌더패턴: 생성자/setter를 사용하지 않고 내가 원하는 속성을 수정해서 불변객체로 만드는 패턴(feat.내부 클래스) */
     @GetMapping("/users/{userNo}")
     public ResponseEntity<ResponseMessage> findUserByNo(@PathVariable int userNo) {
         HttpHeaders headers = new HttpHeaders();
@@ -62,18 +63,18 @@ public class ResponseEntityTestController {
         );
 
         UserDTO foundUser = users.stream()
-                                 .filter(user -> user.getNo() == userNo)
-                                 .collect(Collectors.toList()).get(0);
+                .filter(user -> user.getNo() == userNo)
+                .collect(Collectors.toList()).get(0);
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("foundUser",  foundUser);
+        responseMap.put("foundUser", foundUser);
 
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(new ResponseMessage(200, userNo + "번 화원 조회성공!", responseMap));
+                .body(new ResponseMessage(200, userNo + "번 회원 조회성공!", responseMap));
     }
 
     /* 설명. 응답할 데이터가 따로 없다면 ResponseEntity의 제네릭에 ?를 활용할 수 있다.
-         (feat. ResponseEntity 생성 시 build()로 마무리) */
+        (feat. ResponseEntity 생성 시 build()로 마무리) */
     @PostMapping("/user")
     public ResponseEntity<?> registUser(@RequestBody UserDTO newMember) {
 //        System.out.println("newMember = " + newMember);
@@ -84,8 +85,8 @@ public class ResponseEntityTestController {
 
         users.add(newMember);                                   // 컬렉션에 회원 추가
 
-        return  ResponseEntity
-                .created(URI.create("/entity/users/" + (lastUserNo + 1)))    // Response Header중 "Location"에 담겨 돌아옴
+        return ResponseEntity
+                .created(URI.create("/entity/users/" + (lastUserNo + 1)))   // Response Header 중 "Location"에 담겨 돌아옴
                 .build();
     }
 
@@ -102,7 +103,17 @@ public class ResponseEntityTestController {
         foundUser.setName(modifyMember.getName());
 
         return ResponseEntity.created(URI.create("/entity/users/" + userNo))
-                             .build();
+                .build();
     }
 
+    @DeleteMapping("/users/{userNo}")
+    public ResponseEntity<?> removeUser(@PathVariable int userNo) {
+        UserDTO foundUser =
+                users.stream().filter(user -> user.getNo() == userNo)
+                        .collect(Collectors.toList()).get(0);
+        users.remove(foundUser);
+
+        return ResponseEntity.noContent()      // 204
+                .build();
+    }
 }
