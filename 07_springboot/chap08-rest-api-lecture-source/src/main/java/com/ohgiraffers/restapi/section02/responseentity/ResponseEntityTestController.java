@@ -4,11 +4,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,6 +70,39 @@ public class ResponseEntityTestController {
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(new ResponseMessage(200, userNo + "번 화원 조회성공!", responseMap));
+    }
+
+    /* 설명. 응답할 데이터가 따로 없다면 ResponseEntity의 제네릭에 ?를 활용할 수 있다.
+         (feat. ResponseEntity 생성 시 build()로 마무리) */
+    @PostMapping("/user")
+    public ResponseEntity<?> registUser(@RequestBody UserDTO newMember) {
+//        System.out.println("newMember = " + newMember);
+
+        /* 설명. 회원 insert 진행 */
+        int lastUserNo = users.get(users.size() - 1).getNo();   // 컬렉션에 담긴 마지막 회원의 번호
+        newMember.setNo(lastUserNo + 1);
+
+        users.add(newMember);                                   // 컬렉션에 회원 추가
+
+        return  ResponseEntity
+                .created(URI.create("/entity/users/" + (lastUserNo + 1)))    // Response Header중 "Location"에 담겨 돌아옴
+                .build();
+    }
+
+    @PutMapping("/users/{userNo}")
+    public ResponseEntity<?> modifyUser(@RequestBody UserDTO modifyMember,
+                                        @PathVariable int userNo) {
+        UserDTO foundUser =
+                users.stream()
+                        .filter(user -> user.getNo() == userNo)
+                        .collect(Collectors.toList()).get(0);
+
+        foundUser.setId(modifyMember.getId());
+        foundUser.setPwd(modifyMember.getPwd());
+        foundUser.setName(modifyMember.getName());
+
+        return ResponseEntity.created(URI.create("/entity/users/" + userNo))
+                             .build();
     }
 
 }
