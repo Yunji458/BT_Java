@@ -17,7 +17,7 @@ GET localhost:8080/response/map
 GET localhost:8080/response/image/bytes/pikachu
 
 ### GET request image (2. WebConfig 방식, 정적)
-GET localhost:8080/response/image/charmander.png
+GET http://localhost:8080/response/image/charmander.png
 
 ### GET request image (3. Resource 방식, 부분 동적, 캐시 비활성화, Http 1.0과 호환 가능(Pragma))
 GET localhost:8080/response/image/resource/squirtle.png
