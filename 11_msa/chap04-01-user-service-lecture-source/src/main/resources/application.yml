@@ -19,3 +19,8 @@ spring:
 
 hello:
   message: Welcome to 19th SW-Camp
+
+# 설명. 12시간의 만료 시간 + HMackSha 512 비밀키
+token:
+  expiration_time: 43200000
+  secret: 9K94rMd+cmhR4xoCIcBOIWw8/5IBamvT8+31l+RwTcyqmHYC6z1X0P5levF5Af9tkwnQxE7X1cycKysuV6u4oA==

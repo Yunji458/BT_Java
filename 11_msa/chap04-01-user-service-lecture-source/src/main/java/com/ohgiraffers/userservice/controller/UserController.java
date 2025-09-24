@@ -47,13 +47,14 @@ public class UserController {
         return hello.getMessage();
     }
 
+    /* 설명. 로그인 기능 전 회원가입 기능 먼저 만들기 */
     @PostMapping("/users")
     public ResponseEntity<ResponseRegistUserDTO> registUser(@RequestBody RequestRegistUserDTO newUser) {
         UserDTO userDTO = modelMapper.map(newUser, UserDTO.class);
 
-        userService.registerUser(userDTO);
+        userService.registUser(userDTO);
 
-        ResponseRegistUserDTO responseUser =modelMapper.map(userDTO, ResponseRegistUserDTO.class);
+        ResponseRegistUserDTO responseUser = modelMapper.map(userDTO, ResponseRegistUserDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseUser);
     }
 }
