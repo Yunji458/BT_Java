@@ -1,5 +1,6 @@
 server:
-  port: 8111
+#  port: 8111
+  port: 0
 spring:
   application:
     name: swcamp-user-service
@@ -24,3 +25,12 @@ hello:
 token:
   expiration_time: 43200000
   secret: 9K94rMd+cmhR4xoCIcBOIWw8/5IBamvT8+31l+RwTcyqmHYC6z1X0P5levF5Af9tkwnQxE7X1cycKysuV6u4oA==
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka

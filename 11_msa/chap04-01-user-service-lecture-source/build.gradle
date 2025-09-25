@@ -32,7 +32,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.security:spring-security-test'
-//    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
@@ -46,13 +45,19 @@ dependencies {
     // 회원가입 시 비밀번호 암호화(BCrypt)를 위해 추가, 이후 JWT Token을 활용한 로그인(인증) 및 권한(인가)을 위해
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
-    // 로그인 시점에 인증된 회원을 위한 JTM 토큰 작성, 이후 토큰 유효성 검사
+    // 로그인 시점에 인증된 회원을 위한 JWT 토큰 작성, 이후 토큰 유효성 검사
     // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
     // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // gateway를 추가하면서부터 eureka-client 라이브러리 추가
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+    // 다른 도메인과 통신할 때 필요한 라이브러리(feat.gateway를 활용한 통신)
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 }
 
 dependencyManagement {
