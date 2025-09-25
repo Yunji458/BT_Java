@@ -6,13 +6,11 @@ import com.ohgiraffers.userservice.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.spi.MatchingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -53,6 +51,13 @@ public class UserServiceImpl implements UserService {
         userEntity.setEncryptPwd(bCryptPasswordEncoder.encode(userDTO.getPwd()));
 
         userRepository.save(userEntity);
+    }
+
+    @Override
+    public UserDTO getUserById(String memNo) {
+        UserEntity user = userRepository.findById(Long.parseLong(memNo)).get();
+        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+        return userDTO;
     }
 
     /* 설명. spring security 사용 시 프로바이더에서 활용 할 로그인용 메소드(UserDetails 타입을 반환하는 메소드) */
