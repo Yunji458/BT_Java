@@ -1,6 +1,7 @@
 package com.ohgiraffers.userservice.security;
 
 import jakarta.servlet.Filter;
+import jakarta.ws.rs.HttpMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,8 +43,16 @@ public class WebSecurity {
         http.csrf(csrf -> csrf.disable());
 
         http.authorizeHttpRequests(authz ->
-                        authz.requestMatchers("/**").permitAll()
-                                .anyRequest().authenticated()
+//                authz.requestMatchers("/**").permitAll()
+                                authz.requestMatchers(HttpMethod.GET, "/health").permitAll()
+                                        .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
+                                        .requestMatchers(HttpMethod.GET, "/test").permitAll()
+                                        .requestMatchers("/acturator/**").permitAll()
+//                     .requestMatchers(HttpMethod.GET, "/users/**").hasRole("ENTERPRISE")
+                                        .requestMatchers(HttpMethod.GET, "/users/**").hasAnyRole("ENTERPRISE", "ADMIN")
+                                        .requestMatchers(HttpMethod.GET, "/test1/**", "/test2/**").hasAnyRole("ENTERPRISE", "ADMIN")
+
+                                        .anyRequest().authenticated()
 
                 )
                 /* 설명. Session 방식이 아닌 JWT Token 방식을 사용하겠다. */
