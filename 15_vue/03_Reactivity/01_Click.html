@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <title>Document</title>
+</head>
+<body>
+
+    <!-- 태그도 전달받아 화면에 부착할 수 있다.(template) -->
+    <div id="step01"></div>
+
+    <!-- 이벤트의 핸들러 함수가 인수를 필요로 하면 소괄호를 써야된다.(인수가 필요 없으면 안써도 됨) -->
+    <div id="step02">
+        <div>{{ num }}</div>
+        <button @click="notification('갯수')">
+            알림
+        </button>
+    </div>
+
+    <script>
+        const {createApp, ref} = Vue;
+
+        createApp({
+            setup() {
+                const count = ref(0);
+                return {
+                    count
+                }
+            },
+            template: `
+                <div>count is {{ count }}</div>
+                <button @click='count++'>
+                    1증가
+                </button>
+            `
+        }).mount("#step01");
+
+        createApp({
+            setup() {
+                const num = ref(0);
+
+                function notification(name) {
+                    num.value++;
+                    alert(`${name}:${num.value}개 입니다.`);
+                }
+                return {
+                    num,
+                    notification
+                }
+            }
+        }).mount('#step02');
+    </script>
+</body>
+</html>
