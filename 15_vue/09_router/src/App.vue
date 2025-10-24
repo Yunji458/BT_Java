@@ -19,8 +19,8 @@
     <h2>nested router</h2>
     <nav>
       <RouterLink to="/" active-class="active" replace>Home</RouterLink>
-      <RouterLink to="/nested" active-class="active" replace>중첩</RouterLink>
-      <RouterLink to="/nested" active-class="active" replace>중첩</RouterLink>
+      <RouterLink to="/nested/home" active-class="active" replace>중첩</RouterLink>
+      <RouterLink to="/nested/view" active-class="active" replace>중첩</RouterLink>
     </nav>
   </header>
   <main>
