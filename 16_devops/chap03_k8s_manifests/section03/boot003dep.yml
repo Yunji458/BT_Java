@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: boot-container
-        image: yunji458/jen_boot:latest
+        image: yunji458/jen_boot2:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 7777

@@ -1,4 +1,4 @@
-package com.ohgiraffers.bootproject.service;
+package com.ohgiraffers.bootproject.repository;
 
 import com.ohgiraffers.bootproject.entity.CalculationHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
